@@ -1,0 +1,79 @@
+  "description": "Enrichment for VPN Radius auth",
+  "processors": [
+    {
+      "geoip": {
+        "target_field": "source.geo",
+        "ignore_missing": true,
+        "if": "ctx.source?.geo == null",
+        "field": "winlog.event_data.CallingStationID"
+      }
+    },
+    {
+      "geoip": {
+        "ignore_missing": true,
+        "if": "ctx.destination?.geo == null",
+        "field": "destination.ip",
+        "target_field": "destination.geo"
+      }
+    },
+    {
+      "geoip": {
+        "ignore_missing": true,
+        "database_file": "GeoLite2-ASN.mmdb",
+        "field": "winlog.event_data.CallingStationID",
+        "target_field": "source.as",
+        "properties": [
+          "asn",
+          "organization_name"
+        ]
+      }
+    },
+    {
+      "geoip": {
+        "database_file": "GeoLite2-ASN.mmdb",
+        "field": "destination.ip",
+        "target_field": "destination.as",
+        "properties": [
+          "asn",
+          "organization_name"
+        ],
+        "ignore_missing": true
+      }
+    },
+    {
+      "rename": {
+        "ignore_missing": true,
+        "field": "source.as.asn",
+        "target_field": "source.as.number"
+      }
+    },
+    {
+      "rename": {
+        "field": "source.as.organization_name",
+        "target_field": "source.as.organization.name",
+        "ignore_missing": true
+      }
+    },
+    {
+      "rename": {
+        "field": "destination.as.asn",
+        "target_field": "destination.as.number",
+        "ignore_missing": true
+      }
+    },
+    {
+      "rename": {
+        "ignore_missing": true,
+        "field": "destination.as.organization_name",
+        "target_field": "destination.as.organization.name"
+      }
+    }
+  ],
+  "on_failure": [
+    {
+      "set": {
+        "field": "error.message",
+        "value": "{{ _ingest.on_failure_message }}"
+      }
+    }
+  ]
