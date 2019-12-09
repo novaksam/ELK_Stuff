@@ -1,0 +1,6 @@
+- pipeline.id: inputBeats
+  path.config: "C:\\ELK\\Logstash\\Pipeline\\Pipeline-Intput-Beats\\*.conf"
+- pipeline.id: filterPostprocessing
+  path.config: "C:\\ELK\\Logstash\\Pipeline\\Pipeline-Filter-Postprocessing\\*.conf"
+- pipeline.id: outputElasticsearch
+  path.config: "C:\\ELK\\Logstash\\Pipeline\\Pipeline-Output-Elasticsearch\\*.conf"
